@@ -5,6 +5,7 @@ import { requireAuth } from '../../../core/middlewares/auth.middleware.js';
 import {
   ForgotPasswordSchema,
   LoginSchema,
+  RefreshTokenSchema,
   RegisterSchema,
   ResetPasswordSchema,
   UpdateProfileSchema,
@@ -16,6 +17,7 @@ const controller = new AuthController();
 // Rutas Públicas de Autenticación
 router.post('/register', validateRequest(RegisterSchema), controller.register);
 router.post('/login', validateRequest(LoginSchema), controller.login);
+router.post('/refresh', validateRequest(RefreshTokenSchema), controller.refreshToken);
 router.post('/forgot-password', validateRequest(ForgotPasswordSchema), controller.forgotPassword);
 router.post('/reset-password', validateRequest(ResetPasswordSchema), controller.resetPassword);
 

@@ -100,6 +100,10 @@ export const ResetPasswordSchema = z.object({
     .min(6, 'La nueva contraseña debe tener al menos 6 caracteres'),
 });
 
+export const RefreshTokenSchema = z.object({
+  refreshToken: z.string({ required_error: 'El token de refresco es requerido' }).min(1, 'Refresh token no puede estar vacío'),
+});
+
 export const UpdateProfileSchema = z.object({
   nombre: z.string().min(2).optional(),
   nombreCompleto: z.string().min(2).optional(),

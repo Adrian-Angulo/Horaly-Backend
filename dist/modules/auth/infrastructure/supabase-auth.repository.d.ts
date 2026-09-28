@@ -12,6 +12,10 @@ export declare class SupabaseAuthRepository implements IAuthRepository {
      */
     login(data: LoginDTO): Promise<UserSession>;
     /**
+     * Refrescar sesión usando un Refresh Token de Supabase
+     */
+    refreshToken(refreshToken: string): Promise<UserSession>;
+    /**
      * Solicitud de código / token seguro de recuperación
      */
     requestPasswordReset(email: string, ipAddress?: string): Promise<{

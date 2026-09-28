@@ -54,5 +54,6 @@ export interface IAuthRepository {
     getProfileById(userId: string): Promise<UserProfile | null>;
     getProfileByEmail(email: string): Promise<UserProfile | null>;
     updateProfile(userId: string, data: UpdateProfileDTO): Promise<UserProfile>;
+    refreshToken(refreshToken: string): Promise<UserSession>;
     logout(token: string): Promise<void>;
 }

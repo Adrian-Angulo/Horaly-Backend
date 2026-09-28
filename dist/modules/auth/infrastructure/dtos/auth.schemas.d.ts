@@ -228,6 +228,13 @@ export declare const ResetPasswordSchema: z.ZodObject<{
     token: string;
     newPassword: string;
 }>;
+export declare const RefreshTokenSchema: z.ZodObject<{
+    refreshToken: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    refreshToken: string;
+}, {
+    refreshToken: string;
+}>;
 export declare const UpdateProfileSchema: z.ZodObject<{
     nombre: z.ZodOptional<z.ZodString>;
     nombreCompleto: z.ZodOptional<z.ZodString>;

@@ -60,7 +60,44 @@ CREATE TABLE public.perfiles (
 CREATE INDEX idx_perfiles_email ON public.perfiles(email);
 
 -- ==============================================================================
--- 4. TABLA: public.registros_horas (Jornadas Diarias de Práctica)
+-- 4. TABLA: public.practicas (Gestión y Control de Prácticas Profesionales)
+-- Soporta Estados (Borrador, Activa, Finalizada), Empresa, Período, Horas y Horario
+-- ==============================================================================
+CREATE TABLE public.practicas (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES public.perfiles(id) ON DELETE CASCADE,
+    empresa TEXT NOT NULL,
+    cargo TEXT,
+    supervisor_nombre TEXT,
+    supervisor_email TEXT,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    total_horas_requeridas NUMERIC(6,2) NOT NULL DEFAULT 360.00 CHECK (total_horas_requeridas > 0 AND total_horas_requeridas <= 2000),
+    horas_iniciales_previas NUMERIC(6,2) NOT NULL DEFAULT 0.00 CHECK (horas_iniciales_previas >= 0),
+    horas_minimas_semanales NUMERIC(5,2) NOT NULL DEFAULT 30.00 CHECK (horas_minimas_semanales >= 0),
+    horario_semanal JSONB NOT NULL DEFAULT '{
+      "lunes":     { "diaSemana": "lunes",     "activo": true,  "horaInicio": "08:00", "horaFin": "13:00", "refrigerioMinutos": 0, "modalidad": "Presencial", "horasPrevistasJornada": 5.0 },
+      "martes":    { "diaSemana": "martes",    "activo": true,  "horaInicio": "14:00", "horaFin": "19:00", "refrigerioMinutos": 0, "modalidad": "Presencial", "horasPrevistasJornada": 5.0 },
+      "miercoles": { "diaSemana": "miercoles", "activo": true,  "horaInicio": "14:00", "horaFin": "19:00", "refrigerioMinutos": 0, "modalidad": "Presencial", "horasPrevistasJornada": 5.0 },
+      "jueves":    { "diaSemana": "jueves",    "activo": true,  "horaInicio": "08:00", "horaFin": "13:00", "refrigerioMinutos": 0, "modalidad": "Presencial", "horasPrevistasJornada": 5.0 },
+      "viernes":   { "diaSemana": "viernes",   "activo": true,  "horaInicio": "08:00", "horaFin": "13:00", "refrigerioMinutos": 0, "modalidad": "Presencial", "horasPrevistasJornada": 5.0 },
+      "sabado":    { "diaSemana": "sabado",    "activo": false, "horaInicio": "08:00", "horaFin": "13:00", "refrigerioMinutos": 0, "modalidad": "Presencial", "horasPrevistasJornada": 0.0 },
+      "domingo":   { "diaSemana": "domingo",   "activo": false, "horaInicio": "08:00", "horaFin": "13:00", "refrigerioMinutos": 0, "modalidad": "Presencial", "horasPrevistasJornada": 0.0 }
+    }'::jsonb,
+    estado TEXT NOT NULL DEFAULT 'Activa' CHECK (estado IN ('Borrador', 'Activa', 'Finalizada')),
+    fecha_inicio_real TIMESTAMPTZ,
+    fecha_finalizacion_real TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT TIMEZONE('utc'::text, NOW()),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT TIMEZONE('utc'::text, NOW()),
+
+    CONSTRAINT chk_practicas_fechas CHECK (fecha_inicio <= fecha_fin)
+);
+
+CREATE INDEX idx_practicas_user ON public.practicas(user_id);
+CREATE INDEX idx_practicas_estado ON public.practicas(estado);
+
+-- ==============================================================================
+-- 5. TABLA: public.registros_horas (Jornadas Diarias de Práctica)
 -- Admite IDs generados por el cliente (UUID v4) para soporte Offline-First
 -- ==============================================================================
 CREATE TABLE public.registros_horas (

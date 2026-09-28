@@ -10,6 +10,7 @@ const controller = new auth_controller_js_1.AuthController();
 // Rutas Públicas de Autenticación
 router.post('/register', (0, validation_middleware_js_1.validateRequest)(auth_schemas_js_1.RegisterSchema), controller.register);
 router.post('/login', (0, validation_middleware_js_1.validateRequest)(auth_schemas_js_1.LoginSchema), controller.login);
+router.post('/refresh', (0, validation_middleware_js_1.validateRequest)(auth_schemas_js_1.RefreshTokenSchema), controller.refreshToken);
 router.post('/forgot-password', (0, validation_middleware_js_1.validateRequest)(auth_schemas_js_1.ForgotPasswordSchema), controller.forgotPassword);
 router.post('/reset-password', (0, validation_middleware_js_1.validateRequest)(auth_schemas_js_1.ResetPasswordSchema), controller.resetPassword);
 // Rutas Protegidas (Requieren Bearer Token de Supabase)

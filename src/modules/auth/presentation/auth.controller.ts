@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { RegisterUseCase } from '../application/register.use-case.js';
 import { LoginUseCase } from '../application/login.use-case.js';
+import { RefreshTokenUseCase } from '../application/refresh-token.use-case.js';
 import { RequestPasswordResetUseCase } from '../application/request-password-reset.use-case.js';
 import { ResetPasswordUseCase } from '../application/reset-password.use-case.js';
 import { GetCurrentUserUseCase } from '../application/get-current-user.use-case.js';
@@ -13,6 +14,7 @@ export class AuthController {
   private readonly authRepo = new SupabaseAuthRepository();
   private readonly registerUseCase = new RegisterUseCase(this.authRepo);
   private readonly loginUseCase = new LoginUseCase(this.authRepo);
+  private readonly refreshTokenUseCase = new RefreshTokenUseCase(this.authRepo);
   private readonly requestResetUseCase = new RequestPasswordResetUseCase(this.authRepo);
   private readonly resetPasswordUseCase = new ResetPasswordUseCase(this.authRepo);
   private readonly getCurrentUserUseCase = new GetCurrentUserUseCase(this.authRepo);
@@ -42,6 +44,21 @@ export class AuthController {
         ipAddress,
       });
 
+      res.status(200).json({
+        success: true,
+        token: session.token,
+        refreshToken: session.refreshToken,
+        user: session.user,
+        data: session,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const session = await this.refreshTokenUseCase.execute(req.body.refreshToken);
       res.status(200).json({
         success: true,
         token: session.token,

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const register_use_case_js_1 = require("../application/register.use-case.js");
 const login_use_case_js_1 = require("../application/login.use-case.js");
+const refresh_token_use_case_js_1 = require("../application/refresh-token.use-case.js");
 const request_password_reset_use_case_js_1 = require("../application/request-password-reset.use-case.js");
 const reset_password_use_case_js_1 = require("../application/reset-password.use-case.js");
 const get_current_user_use_case_js_1 = require("../application/get-current-user.use-case.js");
@@ -14,6 +15,7 @@ class AuthController {
     authRepo = new supabase_auth_repository_js_1.SupabaseAuthRepository();
     registerUseCase = new register_use_case_js_1.RegisterUseCase(this.authRepo);
     loginUseCase = new login_use_case_js_1.LoginUseCase(this.authRepo);
+    refreshTokenUseCase = new refresh_token_use_case_js_1.RefreshTokenUseCase(this.authRepo);
     requestResetUseCase = new request_password_reset_use_case_js_1.RequestPasswordResetUseCase(this.authRepo);
     resetPasswordUseCase = new reset_password_use_case_js_1.ResetPasswordUseCase(this.authRepo);
     getCurrentUserUseCase = new get_current_user_use_case_js_1.GetCurrentUserUseCase(this.authRepo);
@@ -41,6 +43,21 @@ class AuthController {
                 ...req.body,
                 ipAddress,
             });
+            res.status(200).json({
+                success: true,
+                token: session.token,
+                refreshToken: session.refreshToken,
+                user: session.user,
+                data: session,
+            });
+        }
+        catch (error) {
+            next(error);
+        }
+    };
+    refreshToken = async (req, res, next) => {
+        try {
+            const session = await this.refreshTokenUseCase.execute(req.body.refreshToken);
             res.status(200).json({
                 success: true,
                 token: session.token,

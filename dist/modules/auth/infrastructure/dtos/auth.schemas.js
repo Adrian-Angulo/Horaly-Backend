@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProfileSchema = exports.ResetPasswordSchema = exports.ForgotPasswordSchema = exports.LoginSchema = exports.RegisterSchema = exports.HorarioSemanalSchema = exports.DiaHorarioSchema = void 0;
+exports.UpdateProfileSchema = exports.RefreshTokenSchema = exports.ResetPasswordSchema = exports.ForgotPasswordSchema = exports.LoginSchema = exports.RegisterSchema = exports.HorarioSemanalSchema = exports.DiaHorarioSchema = void 0;
 const zod_1 = require("zod");
 exports.DiaHorarioSchema = zod_1.z.object({
     diaSemana: zod_1.z.string().optional(),
@@ -92,6 +92,9 @@ exports.ResetPasswordSchema = zod_1.z.object({
     newPassword: zod_1.z
         .string({ required_error: 'La nueva contraseña es requerida' })
         .min(6, 'La nueva contraseña debe tener al menos 6 caracteres'),
+});
+exports.RefreshTokenSchema = zod_1.z.object({
+    refreshToken: zod_1.z.string({ required_error: 'El token de refresco es requerido' }).min(1, 'Refresh token no puede estar vacío'),
 });
 exports.UpdateProfileSchema = zod_1.z.object({
     nombre: zod_1.z.string().min(2).optional(),

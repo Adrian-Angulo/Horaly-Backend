@@ -139,6 +139,39 @@ class SupabaseAuthRepository {
         };
     }
     /**
+     * Refrescar sesión usando un Refresh Token de Supabase
+     */
+    async refreshToken(refreshToken) {
+        const { data, error } = await this.supabaseAnon.auth.refreshSession({
+            refresh_token: refreshToken.trim(),
+        });
+        if (error || !data.session || !data.user) {
+            throw new app_error_js_1.UnauthorizedError('Token de refresco inválido o expirado. Por favor inicia sesión nuevamente.');
+        }
+        const profile = await this.getProfileById(data.user.id);
+        const cleanEmail = data.user.email || '';
+        const userProfile = profile || {
+            id: data.user.id,
+            email: cleanEmail,
+            nombre: data.user.user_metadata?.['nombre'] || data.user.user_metadata?.['nombreCompleto'] || cleanEmail.split('@')[0],
+            nombreCompleto: data.user.user_metadata?.['nombreCompleto'] || data.user.user_metadata?.['nombre'] || cleanEmail.split('@')[0],
+            metaHorasTotal: 360,
+            metaHoras: 360,
+            horasInicialesPrevias: 0,
+            horasMinimasSemanales: 30,
+            perfilCompletado: false,
+            fechaInicio: null,
+            fechaFin: null,
+            horarioSemanal: auth_user_entity_js_1.defaultHorarioSemanal,
+        };
+        return {
+            user: userProfile,
+            token: data.session.access_token,
+            refreshToken: data.session.refresh_token,
+            expiresIn: data.session.expires_in,
+        };
+    }
+    /**
      * Solicitud de código / token seguro de recuperación
      */
     async requestPasswordReset(email, ipAddress) {
