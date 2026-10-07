@@ -174,17 +174,14 @@ export class PacingEngineService {
       diasHabilesTranscurridos = diasHabilesCerrados + (esHoyHabil ? 1 : 0);
       diasHabilesRestantes = (esHoyHabil ? 1 : 0) + diasHabilesFuturos;
 
-      // Meta efectiva a computar dentro del periodo del calendario
-      const metaEfectivaPeriodo = Math.max(0, metaHorasTotal - horasPreviasCursadas);
-
       // Horas esperadas al inicio del turno de hoy (sin sesgo matutino del día en curso)
       horasEsperadasHoy =
         totalDiasHabiles > 0
-          ? this.round(metaEfectivaPeriodo * (diasHabilesCerrados / totalDiasHabiles), 1)
+          ? this.round(metaHorasTotal * (diasHabilesCerrados / totalDiasHabiles), 1)
           : 0;
 
-      // Diferencia respecto a lo registrado dentro de la app en este periodo
-      diferenciaHorasRitmo = this.round(horasRegistradasEnApp - horasEsperadasHoy, 1);
+      // Diferencia respecto a las horas totales completadas (previas cursadas + registradas en app)
+      diferenciaHorasRitmo = this.round(horasTotalesCompletadas - horasEsperadasHoy, 1);
 
       // Determinación de estado analítico
       if (horasRestantes <= 0) {
