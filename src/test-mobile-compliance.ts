@@ -111,6 +111,60 @@ const profileSinFechas: Perfil = {
 const metricasSinFechas = PacingEngineService.calcularMetricas(profileSinFechas, mockRegistros, simulatedNow);
 assert(metricasSinFechas.estadoRitmo === 'sin_fechas', 'Estado es sin_fechas cuando no hay fechas');
 
+// Test periodo no iniciado (simulatedNow < fechaInicio)
+const profileFuturo: Perfil = {
+  ...mockProfile,
+  fechaInicio: '2026-04-01',
+  fechaFin: '2026-07-31',
+};
+const metricasFuturo = PacingEngineService.calcularMetricas(profileFuturo, [], new Date(2026, 2, 15));
+assert(metricasFuturo.estadoRitmo === 'a_tiempo', 'Periodo no iniciado mantiene estado no punitivo');
+assert(metricasFuturo.mensajeRitmo.includes('inicia el 2026-04-01'), 'Mensaje informa fecha de inicio programada');
+
+// Test consistencia intra-día: registrar jornada de hoy no causa falso adelantado
+const profileUniforme: Perfil = {
+  ...mockProfile,
+  horasInicialesPrevias: 0,
+  metaHorasTotal: 100,
+  fechaInicio: '2026-03-02', // Lunes
+  fechaFin: '2026-03-27',    // 20 días hábiles -> 5h/día esperado
+};
+// Simular lunes 2 de marzo por la tarde habiendo registrado sus 5 hrs de hoy
+const registrosHoyLunes: RegistroHora[] = [{
+  id: 'reg-lunes',
+  userId: 'test-user-123',
+  fecha: '2026-03-02',
+  horaInicio: '08:00',
+  horaFin: '13:00',
+  descuentoAlmuerzoMinutos: 0,
+  horasComputables: 5.0,
+  modalidad: 'Presencial',
+  actividades: 'Labores habituales',
+  estado: 'Aprobado',
+  createdAt: '2026-03-02T13:00:00Z',
+  updatedAt: '2026-03-02T13:00:00Z',
+}];
+const metricasLunesTarde = PacingEngineService.calcularMetricas(profileUniforme, registrosHoyLunes, new Date(2026, 2, 2));
+assert(metricasLunesTarde.estadoRitmo === 'a_tiempo', 'Registrar la jornada de hoy mantiene estado a_tiempo (no falso adelantado)');
+assert(metricasLunesTarde.diferenciaHorasRitmo === 0, 'Diferencia de ritmo es 0 tras completar exactamente la jornada de hoy');
+assert(metricasLunesTarde.diasHabilesRestantes === 19, 'Días restantes no diluyen hoy tras haber registrado (19 días futuros)');
+assert(metricasLunesTarde.ritmoDiarioSugerido === 5.0, 'Ritmo diario sugerido futuro se mantiene en 5.0h/día');
+
+// Test advertencia de sobrecarga / límite legal (> 6h/día)
+const profileAtrasado: Perfil = {
+  ...mockProfile,
+  horasInicialesPrevias: 0,
+  metaHorasTotal: 100,
+  fechaInicio: '2026-03-02',
+  fechaFin: '2026-03-13', // 10 días hábiles
+};
+// Día 5 sin ningún registro
+const metricasAtrasadas = PacingEngineService.calcularMetricas(profileAtrasado, [], new Date(2026, 2, 6));
+assert(metricasAtrasadas.estadoRitmo === 'atrasado', 'Detecta estado atrasado');
+assert(metricasAtrasadas.ritmoDiarioSugerido > 6.0, 'Ritmo requerido es superior a 6h/día');
+assert(metricasAtrasadas.mensajeRitmo.includes('excede la jornada habitual'), 'Mensaje alerta sobrecarga de jornada permitida');
+
+
 // -----------------------------------------------------------------------------
 // RESULTADOS
 // -----------------------------------------------------------------------------
