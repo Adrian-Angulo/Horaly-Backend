@@ -1,4 +1,4 @@
-export type EstadoRitmo = 'adelantado' | 'a_tiempo' | 'atrasado' | 'sin_fechas';
+export type EstadoRitmo = 'adelantado' | 'a_tiempo' | 'atrasado' | 'vencido' | 'sin_fechas';
 
 export interface MetricasDashboard {
   horasTotalesCompletadas: number;

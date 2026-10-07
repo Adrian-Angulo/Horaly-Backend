@@ -145,6 +145,10 @@ export class PacingEngineService {
         activeDaysMap['viernes'] = true;
       }
 
+      let diasHabilesCerrados = 0;
+      let esHoyHabil = false;
+      let diasHabilesFuturos = 0;
+
       // Iterar día a día
       const curr = new Date(startDate);
       while (curr <= endDate) {
@@ -155,39 +159,55 @@ export class PacingEngineService {
           totalDiasHabiles++;
           const dateIso = `${curr.getFullYear()}-${(curr.getMonth() + 1).toString().padStart(2, '0')}-${curr.getDate().toString().padStart(2, '0')}`;
 
-          if (dateIso <= todayStr) {
-            diasHabilesTranscurridos++;
+          if (dateIso < todayStr) {
+            diasHabilesCerrados++;
+          } else if (dateIso === todayStr) {
+            esHoyHabil = true;
           } else {
-            diasHabilesRestantes++;
+            diasHabilesFuturos++;
           }
         }
 
         curr.setDate(curr.getDate() + 1);
       }
 
-      // Horas esperadas a la fecha
+      diasHabilesTranscurridos = diasHabilesCerrados + (esHoyHabil ? 1 : 0);
+      diasHabilesRestantes = (esHoyHabil ? 1 : 0) + diasHabilesFuturos;
+
+      // Meta efectiva a computar dentro del periodo del calendario
+      const metaEfectivaPeriodo = Math.max(0, metaHorasTotal - horasPreviasCursadas);
+
+      // Horas esperadas al inicio del turno de hoy (sin sesgo matutino del día en curso)
       horasEsperadasHoy =
         totalDiasHabiles > 0
-          ? this.round(metaHorasTotal * (diasHabilesTranscurridos / totalDiasHabiles), 1)
+          ? this.round(metaEfectivaPeriodo * (diasHabilesCerrados / totalDiasHabiles), 1)
           : 0;
 
-      diferenciaHorasRitmo = this.round(horasTotalesCompletadas - horasEsperadasHoy, 1);
+      // Diferencia respecto a lo registrado dentro de la app en este periodo
+      diferenciaHorasRitmo = this.round(horasRegistradasEnApp - horasEsperadasHoy, 1);
 
-      ritmoDiarioSugerido =
-        diasHabilesRestantes > 0
-          ? this.round(horasRestantes / diasHabilesRestantes, 1)
-          : horasRestantes;
-
-      // Determinación de estado
-      if (horasRestantes <= 0 || diferenciaHorasRitmo >= 3.0) {
+      // Determinación de estado analítico
+      if (horasRestantes <= 0) {
         estadoRitmo = 'adelantado';
-        mensajeRitmo = `🚀 Vas adelantado por ${diferenciaHorasRitmo > 0 ? '+' : ''}${diferenciaHorasRitmo.toFixed(1)} hrs. ¡Excelente ritmo!`;
-      } else if (diferenciaHorasRitmo >= -3.0) {
-        estadoRitmo = 'a_tiempo';
-        mensajeRitmo = '⏱️ Vas al día según tu planificación.';
+        ritmoDiarioSugerido = 0;
+        mensajeRitmo = '🎉 ¡Completaste el 100% de tus horas de prácticas!';
+      } else if (diasHabilesRestantes === 0) {
+        estadoRitmo = 'vencido';
+        ritmoDiarioSugerido = 0;
+        mensajeRitmo = `📅 El periodo de prácticas finalizó con ${horasRestantes.toFixed(1)} hrs pendientes. Ajusta tu fecha de fin si acordaste una extensión.`;
       } else {
-        estadoRitmo = 'atrasado';
-        mensajeRitmo = `⚠️ Llevas un retraso de ${Math.abs(diferenciaHorasRitmo).toFixed(1)} hrs. Necesitas ${ritmoDiarioSugerido.toFixed(1)} hrs/día.`;
+        ritmoDiarioSugerido = this.round(horasRestantes / diasHabilesRestantes, 1);
+
+        if (diferenciaHorasRitmo >= 3.0) {
+          estadoRitmo = 'adelantado';
+          mensajeRitmo = `🚀 Vas adelantado por +${diferenciaHorasRitmo.toFixed(1)} hrs. ¡Excelente ritmo!`;
+        } else if (diferenciaHorasRitmo >= -3.0) {
+          estadoRitmo = 'a_tiempo';
+          mensajeRitmo = '⏱️ Vas al día según tu planificación.';
+        } else {
+          estadoRitmo = 'atrasado';
+          mensajeRitmo = `⚠️ Llevas un retraso de ${Math.abs(diferenciaHorasRitmo).toFixed(1)} hrs. Necesitas ${ritmoDiarioSugerido.toFixed(1)} hrs/día.`;
+        }
       }
     }
 
