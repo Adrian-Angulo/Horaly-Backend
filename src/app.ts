@@ -1,8 +1,10 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 import { ENV } from './config/env.config.js';
 import { errorHandler } from './core/middlewares/error.middleware.js';
+import { swaggerDocument } from './docs/swagger.js';
 import authRoutes from './modules/auth/presentation/auth.routes.js';
 import profileRoutes from './modules/profile/presentation/profile.routes.js';
 import registrosRoutes from './modules/registros/presentation/registros.routes.js';
@@ -13,7 +15,12 @@ export const createApp = (): Express => {
   const app = express();
 
   // 1. Middlewares de Seguridad & Parsing
-  app.use(helmet());
+  // CSP desactivado para permitir scripts, estilos y assets de Swagger UI
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  );
   app.use(
     cors({
       origin: (_origin, callback) => {
@@ -28,15 +35,25 @@ export const createApp = (): Express => {
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-  // 2. Root & Health check endpoints
+  // 2. Swagger Documentation UI & OpenAPI Spec
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.get('/api-docs.json', (_req: Request, res: Response) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(swaggerDocument);
+  });
+
+  // 3. Root & Health check endpoints
   app.get('/', (_req: Request, res: Response) => {
     res.status(200).json({
       name: 'PractiHoras Backend API',
       status: 'ONLINE',
       architecture: 'Clean Architecture & SOLID',
       description: 'API REST compatible con Frontend Web y Frontend Móvil (Flutter)',
+      documentation: '/api-docs',
+      swaggerJson: '/api-docs.json',
       endpoints: {
         health: '/api/health',
+        documentation: '/api-docs',
         auth: '/api/v1/auth',
         profile: '/api/v1/profile',
         registros: '/api/v1/registros',
@@ -53,17 +70,18 @@ export const createApp = (): Express => {
       timestamp: new Date().toISOString(),
       environment: ENV.NODE_ENV,
       version: '1.1.0',
+      documentation: '/api-docs',
     });
   });
 
-  // 3. Montar Módulos de la API
+  // 4. Montar Módulos de la API
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/profile', profileRoutes);
   app.use('/api/v1/registros', registrosRoutes);
   app.use('/api/v1/metricas', metricasRoutes);
   app.use('/api/v1/sync', syncRoutes);
 
-  // 4. Fallback 404
+  // 5. Fallback 404
   app.use((_req: Request, res: Response) => {
     res.status(404).json({
       statusCode: 400,
@@ -73,7 +91,7 @@ export const createApp = (): Express => {
     });
   });
 
-  // 5. Middleware centralizado de errores
+  // 6. Middleware centralizado de errores
   app.use(errorHandler);
 
   return app;

@@ -7,8 +7,10 @@ exports.createApp = void 0;
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const env_config_js_1 = require("./config/env.config.js");
 const error_middleware_js_1 = require("./core/middlewares/error.middleware.js");
+const swagger_js_1 = require("./docs/swagger.js");
 const auth_routes_js_1 = __importDefault(require("./modules/auth/presentation/auth.routes.js"));
 const profile_routes_js_1 = __importDefault(require("./modules/profile/presentation/profile.routes.js"));
 const registros_routes_js_1 = __importDefault(require("./modules/registros/presentation/registros.routes.js"));
@@ -17,7 +19,10 @@ const sync_routes_js_1 = __importDefault(require("./modules/sync/presentation/sy
 const createApp = () => {
     const app = (0, express_1.default)();
     // 1. Middlewares de Seguridad & Parsing
-    app.use((0, helmet_1.default)());
+    // CSP desactivado para permitir scripts, estilos y assets de Swagger UI
+    app.use((0, helmet_1.default)({
+        contentSecurityPolicy: false,
+    }));
     app.use((0, cors_1.default)({
         origin: (_origin, callback) => {
             // Permitir peticiones desde apps móviles (sin origin) y orígenes autorizados
@@ -29,15 +34,24 @@ const createApp = () => {
     }));
     app.use(express_1.default.json({ limit: '10mb' }));
     app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
-    // 2. Root & Health check endpoints
+    // 2. Swagger Documentation UI & OpenAPI Spec
+    app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_js_1.swaggerDocument));
+    app.get('/api-docs.json', (_req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(swagger_js_1.swaggerDocument);
+    });
+    // 3. Root & Health check endpoints
     app.get('/', (_req, res) => {
         res.status(200).json({
             name: 'PractiHoras Backend API',
             status: 'ONLINE',
             architecture: 'Clean Architecture & SOLID',
             description: 'API REST compatible con Frontend Web y Frontend Móvil (Flutter)',
+            documentation: '/api-docs',
+            swaggerJson: '/api-docs.json',
             endpoints: {
                 health: '/api/health',
+                documentation: '/api-docs',
                 auth: '/api/v1/auth',
                 profile: '/api/v1/profile',
                 registros: '/api/v1/registros',
@@ -53,15 +67,16 @@ const createApp = () => {
             timestamp: new Date().toISOString(),
             environment: env_config_js_1.ENV.NODE_ENV,
             version: '1.1.0',
+            documentation: '/api-docs',
         });
     });
-    // 3. Montar Módulos de la API
+    // 4. Montar Módulos de la API
     app.use('/api/v1/auth', auth_routes_js_1.default);
     app.use('/api/v1/profile', profile_routes_js_1.default);
     app.use('/api/v1/registros', registros_routes_js_1.default);
     app.use('/api/v1/metricas', metricas_routes_js_1.default);
     app.use('/api/v1/sync', sync_routes_js_1.default);
-    // 4. Fallback 404
+    // 5. Fallback 404
     app.use((_req, res) => {
         res.status(404).json({
             statusCode: 400,
@@ -70,7 +85,7 @@ const createApp = () => {
             timestamp: new Date().toISOString(),
         });
     });
-    // 5. Middleware centralizado de errores
+    // 6. Middleware centralizado de errores
     app.use(error_middleware_js_1.errorHandler);
     return app;
 };

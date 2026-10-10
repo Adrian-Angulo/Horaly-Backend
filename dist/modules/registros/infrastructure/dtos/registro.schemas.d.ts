@@ -17,8 +17,8 @@ export declare const CrearRegistroSchema: z.ZodEffects<z.ZodObject<{
     modalidad: "Presencial" | "Remoto" | "Híbrido";
     fecha: string;
     actividades: string;
-    id?: string | undefined;
     refrigerioMinutos?: number | undefined;
+    id?: string | undefined;
     descuentoAlmuerzoMinutos?: number | undefined;
     estado?: "Borrador" | "Pendiente" | "Aprobado" | "Observado" | undefined;
     horasComputables?: number | undefined;
@@ -28,10 +28,10 @@ export declare const CrearRegistroSchema: z.ZodEffects<z.ZodObject<{
     horaFin: string;
     fecha: string;
     actividades: string;
-    id?: string | undefined;
     refrigerioMinutos?: number | undefined;
-    descuentoAlmuerzoMinutos?: number | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+    id?: string | undefined;
+    descuentoAlmuerzoMinutos?: number | undefined;
     estado?: "Borrador" | "Pendiente" | "Aprobado" | "Observado" | undefined;
     horasComputables?: number | undefined;
     supervisorNombre?: string | null | undefined;
@@ -41,8 +41,8 @@ export declare const CrearRegistroSchema: z.ZodEffects<z.ZodObject<{
     modalidad: "Presencial" | "Remoto" | "Híbrido";
     fecha: string;
     actividades: string;
-    id?: string | undefined;
     refrigerioMinutos?: number | undefined;
+    id?: string | undefined;
     descuentoAlmuerzoMinutos?: number | undefined;
     estado?: "Borrador" | "Pendiente" | "Aprobado" | "Observado" | undefined;
     horasComputables?: number | undefined;
@@ -52,10 +52,10 @@ export declare const CrearRegistroSchema: z.ZodEffects<z.ZodObject<{
     horaFin: string;
     fecha: string;
     actividades: string;
-    id?: string | undefined;
     refrigerioMinutos?: number | undefined;
-    descuentoAlmuerzoMinutos?: number | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+    id?: string | undefined;
+    descuentoAlmuerzoMinutos?: number | undefined;
     estado?: "Borrador" | "Pendiente" | "Aprobado" | "Observado" | undefined;
     horasComputables?: number | undefined;
     supervisorNombre?: string | null | undefined;
@@ -75,10 +75,10 @@ export declare const ActualizarRegistroSchema: z.ZodObject<{
     horaInicio?: string | undefined;
     horaFin?: string | undefined;
     refrigerioMinutos?: number | undefined;
-    descuentoAlmuerzoMinutos?: number | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
     fecha?: string | undefined;
     actividades?: string | undefined;
+    descuentoAlmuerzoMinutos?: number | undefined;
     estado?: "Borrador" | "Pendiente" | "Aprobado" | "Observado" | undefined;
     horasComputables?: number | undefined;
     supervisorNombre?: string | null | undefined;
@@ -86,10 +86,10 @@ export declare const ActualizarRegistroSchema: z.ZodObject<{
     horaInicio?: string | undefined;
     horaFin?: string | undefined;
     refrigerioMinutos?: number | undefined;
-    descuentoAlmuerzoMinutos?: number | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
     fecha?: string | undefined;
     actividades?: string | undefined;
+    descuentoAlmuerzoMinutos?: number | undefined;
     estado?: "Borrador" | "Pendiente" | "Aprobado" | "Observado" | undefined;
     horasComputables?: number | undefined;
     supervisorNombre?: string | null | undefined;
@@ -102,18 +102,18 @@ export declare const FiltrosRegistrosSchema: z.ZodObject<{
     hasta: z.ZodOptional<z.ZodString>;
     limite: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    hasta?: string | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
-    desde?: string | undefined;
     mes?: number | undefined;
     anio?: number | undefined;
+    desde?: string | undefined;
+    hasta?: string | undefined;
     limite?: number | undefined;
 }, {
-    hasta?: string | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
-    desde?: string | undefined;
     mes?: number | undefined;
     anio?: number | undefined;
+    desde?: string | undefined;
+    hasta?: string | undefined;
     limite?: number | undefined;
 }>;
 export type CrearRegistroInput = z.infer<typeof CrearRegistroSchema>;

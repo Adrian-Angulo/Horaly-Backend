@@ -16,13 +16,13 @@ export declare const DiaHorarioSchema: z.ZodObject<{
     diaSemana?: string | undefined;
     descuentoAlmuerzoMinutos?: number | undefined;
 }, {
-    diaSemana?: string | undefined;
     activo?: boolean | undefined;
     horaInicio?: string | undefined;
     horaFin?: string | undefined;
     refrigerioMinutos?: number | undefined;
-    descuentoAlmuerzoMinutos?: number | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+    diaSemana?: string | undefined;
+    descuentoAlmuerzoMinutos?: number | undefined;
 }>;
 export declare const HorarioSemanalSchema: z.ZodRecord<z.ZodString, z.ZodObject<{
     diaSemana: z.ZodOptional<z.ZodString>;
@@ -41,13 +41,13 @@ export declare const HorarioSemanalSchema: z.ZodRecord<z.ZodString, z.ZodObject<
     diaSemana?: string | undefined;
     descuentoAlmuerzoMinutos?: number | undefined;
 }, {
-    diaSemana?: string | undefined;
     activo?: boolean | undefined;
     horaInicio?: string | undefined;
     horaFin?: string | undefined;
     refrigerioMinutos?: number | undefined;
-    descuentoAlmuerzoMinutos?: number | undefined;
     modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+    diaSemana?: string | undefined;
+    descuentoAlmuerzoMinutos?: number | undefined;
 }>>;
 export declare const RegisterSchema: z.ZodEffects<z.ZodObject<{
     email: z.ZodString;
@@ -80,13 +80,13 @@ export declare const RegisterSchema: z.ZodEffects<z.ZodObject<{
         diaSemana?: string | undefined;
         descuentoAlmuerzoMinutos?: number | undefined;
     }, {
-        diaSemana?: string | undefined;
         activo?: boolean | undefined;
         horaInicio?: string | undefined;
         horaFin?: string | undefined;
         refrigerioMinutos?: number | undefined;
-        descuentoAlmuerzoMinutos?: number | undefined;
         modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+        diaSemana?: string | undefined;
+        descuentoAlmuerzoMinutos?: number | undefined;
     }>>>;
     horaInicioHabitual: z.ZodOptional<z.ZodString>;
     horaFinHabitual: z.ZodOptional<z.ZodString>;
@@ -134,13 +134,13 @@ export declare const RegisterSchema: z.ZodEffects<z.ZodObject<{
     horasMinimasSemanales?: number | undefined;
     perfilCompletado?: boolean | undefined;
     horarioSemanal?: Record<string, {
-        diaSemana?: string | undefined;
         activo?: boolean | undefined;
         horaInicio?: string | undefined;
         horaFin?: string | undefined;
         refrigerioMinutos?: number | undefined;
-        descuentoAlmuerzoMinutos?: number | undefined;
         modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+        diaSemana?: string | undefined;
+        descuentoAlmuerzoMinutos?: number | undefined;
     }> | undefined;
     horaInicioHabitual?: string | undefined;
     horaFinHabitual?: string | undefined;
@@ -188,13 +188,13 @@ export declare const RegisterSchema: z.ZodEffects<z.ZodObject<{
     horasMinimasSemanales?: number | undefined;
     perfilCompletado?: boolean | undefined;
     horarioSemanal?: Record<string, {
-        diaSemana?: string | undefined;
         activo?: boolean | undefined;
         horaInicio?: string | undefined;
         horaFin?: string | undefined;
         refrigerioMinutos?: number | undefined;
-        descuentoAlmuerzoMinutos?: number | undefined;
         modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+        diaSemana?: string | undefined;
+        descuentoAlmuerzoMinutos?: number | undefined;
     }> | undefined;
     horaInicioHabitual?: string | undefined;
     horaFinHabitual?: string | undefined;
@@ -264,13 +264,13 @@ export declare const UpdateProfileSchema: z.ZodObject<{
         diaSemana?: string | undefined;
         descuentoAlmuerzoMinutos?: number | undefined;
     }, {
-        diaSemana?: string | undefined;
         activo?: boolean | undefined;
         horaInicio?: string | undefined;
         horaFin?: string | undefined;
         refrigerioMinutos?: number | undefined;
-        descuentoAlmuerzoMinutos?: number | undefined;
         modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+        diaSemana?: string | undefined;
+        descuentoAlmuerzoMinutos?: number | undefined;
     }>>>;
     avatarUrl: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
@@ -308,13 +308,13 @@ export declare const UpdateProfileSchema: z.ZodObject<{
     horasMinimasSemanales?: number | undefined;
     perfilCompletado?: boolean | undefined;
     horarioSemanal?: Record<string, {
-        diaSemana?: string | undefined;
         activo?: boolean | undefined;
         horaInicio?: string | undefined;
         horaFin?: string | undefined;
         refrigerioMinutos?: number | undefined;
-        descuentoAlmuerzoMinutos?: number | undefined;
         modalidad?: "Presencial" | "Remoto" | "Híbrido" | undefined;
+        diaSemana?: string | undefined;
+        descuentoAlmuerzoMinutos?: number | undefined;
     }> | undefined;
     avatarUrl?: string | null | undefined;
 }>;
