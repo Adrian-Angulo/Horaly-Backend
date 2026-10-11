@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SupabaseAuthRepository = void 0;
-const auth_user_entity_js_1 = require("../domain/entities/auth-user.entity.js");
+const auth_constans_js_1 = require("../domain/config/auth.constans.js");
 const app_error_js_1 = require("../../../core/errors/app-error.js");
 const supabase_config_js_1 = require("../../../config/supabase.config.js");
 const crypto_util_js_1 = require("../../../core/utils/crypto.util.js");
@@ -33,7 +33,7 @@ class SupabaseAuthRepository {
                 horasInicialesPrevias: data.horasInicialesPrevias ?? 0,
                 horasMinimasSemanales: data.horasMinimasSemanales ?? 30,
                 perfilCompletado: data.perfilCompletado ?? false,
-                horarioSemanal: data.horarioSemanal || auth_user_entity_js_1.defaultHorarioSemanal,
+                horarioSemanal: data.horarioSemanal || auth_constans_js_1.defaultHorarioSemanal,
             },
         });
         if (authError || !authData.user) {
@@ -58,7 +58,7 @@ class SupabaseAuthRepository {
             perfil_completado: data.perfilCompletado ?? false,
             fecha_inicio: data.fechaInicio || null,
             fecha_fin: data.fechaFin || null,
-            horario_semanal: data.horarioSemanal || auth_user_entity_js_1.defaultHorarioSemanal,
+            horario_semanal: data.horarioSemanal || auth_constans_js_1.defaultHorarioSemanal,
         };
         const { error: profileError } = await this.supabaseAdmin
             .from('perfiles')
@@ -88,7 +88,7 @@ class SupabaseAuthRepository {
             horasInicialesPrevias: data.horasInicialesPrevias ?? 0,
             horasMinimasSemanales: data.horasMinimasSemanales ?? 30,
             perfilCompletado: data.perfilCompletado ?? false,
-            horarioSemanal: data.horarioSemanal || auth_user_entity_js_1.defaultHorarioSemanal,
+            horarioSemanal: data.horarioSemanal || auth_constans_js_1.defaultHorarioSemanal,
         };
         return {
             user: userProfile,
@@ -129,7 +129,7 @@ class SupabaseAuthRepository {
             perfilCompletado: false,
             fechaInicio: null,
             fechaFin: null,
-            horarioSemanal: auth_user_entity_js_1.defaultHorarioSemanal,
+            horarioSemanal: auth_constans_js_1.defaultHorarioSemanal,
         };
         return {
             user: userProfile,
@@ -162,7 +162,7 @@ class SupabaseAuthRepository {
             perfilCompletado: false,
             fechaInicio: null,
             fechaFin: null,
-            horarioSemanal: auth_user_entity_js_1.defaultHorarioSemanal,
+            horarioSemanal: auth_constans_js_1.defaultHorarioSemanal,
         };
         return {
             user: userProfile,
@@ -391,7 +391,7 @@ class SupabaseAuthRepository {
             perfilCompletado: Boolean(raw.perfil_completado),
             fechaInicio: raw.fecha_inicio ? raw.fecha_inicio.split('T')[0] : null,
             fechaFin: raw.fecha_fin ? raw.fecha_fin.split('T')[0] : null,
-            horarioSemanal: raw.horario_semanal || auth_user_entity_js_1.defaultHorarioSemanal,
+            horarioSemanal: raw.horario_semanal || auth_constans_js_1.defaultHorarioSemanal,
             avatarUrl: raw.avatar_url || undefined,
             createdAt: raw.created_at,
             updatedAt: raw.updated_at,

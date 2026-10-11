@@ -5,7 +5,8 @@ import {
   ResetPasswordDTO,
   UpdateProfileDTO,
 } from '../domain/repositories/auth.repository.js';
-import { UserProfile, UserSession, defaultHorarioSemanal } from '../domain/entities/auth-user.entity.js';
+import { UserProfile, UserSession } from '../domain/entities/auth-user.entity.js';
+import { defaultHorarioSemanal } from '../domain/config/auth.constans.js';
 import {
   AccountLockedError,
   BadRequestError,

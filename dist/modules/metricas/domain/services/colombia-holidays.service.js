@@ -1,25 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ColombiaHolidaysService = void 0;
-/**
- * Servicio de Dominio para el cálculo determinista de festivos nacionales de Colombia.
- *
- * Implementa la legislación oficial colombiana:
- * - Ley 51 de 1983 (Ley Emiliani): Traslado de días festivos al lunes siguiente.
- * - Festivos fijos inamovibles.
- * - Festivos móviles basados en el cómputo del Domingo de Resurrección (Pascua)
- *   utilizando el algoritmo gregoriano anónimo (Meeus/Jones/Butcher).
- *
- * Principios aplicados:
- * - SOLID (SRP): Responsabilidad única de calcular festivos de Colombia.
- * - Clean Code: Funciones pequeñas, puras, sin efectos secundarios, tipado estricto.
- */
 class ColombiaHolidaysService {
     static cachePorAnio = new Map();
-    /**
-     * Calcula el Domingo de Resurrección (Pascua) para un año dado.
-     * Algoritmo de Meeus/Jones/Butcher para el calendario Gregoriano.
-     */
     static calcularDomingoPascua(year) {
         const a = year % 19;
         const b = Math.floor(year / 100);
@@ -37,10 +20,6 @@ class ColombiaHolidaysService {
         const day = ((h + l - 7 * m + 114) % 31) + 1;
         return new Date(year, month - 1, day);
     }
-    /**
-     * Aplica la regla de la Ley Emiliani: si el día no es lunes,
-     * se traslada al lunes inmediatamente posterior.
-     */
     static trasladarAlSiguienteLunes(date) {
         const dayOfWeek = date.getDay(); // 0: domingo, 1: lunes, ..., 6: sábado
         if (dayOfWeek === 1) {
@@ -62,15 +41,11 @@ class ColombiaHolidaysService {
         const d = date.getDate().toString().padStart(2, '0');
         return `${y}-${m}-${d}`;
     }
-    /**
-     * Obtiene todos los festivos nacionales oficiales de Colombia para el año dado en formato ISO (`YYYY-MM-DD`).
-     */
     static obtenerFestivosPorAnio(year) {
         if (this.cachePorAnio.has(year)) {
             return this.cachePorAnio.get(year);
         }
         const festivos = new Set();
-        // 1. Festivos Fijos (no se trasladan)
         festivos.add(this.formatearIso(new Date(year, 0, 1))); // 1 Ene: Año Nuevo
         festivos.add(this.formatearIso(new Date(year, 4, 1))); // 1 May: Día del Trabajo
         festivos.add(this.formatearIso(new Date(year, 6, 20))); // 20 Jul: Grito de Independencia
@@ -99,9 +74,6 @@ class ColombiaHolidaysService {
         this.cachePorAnio.set(year, festivos);
         return festivos;
     }
-    /**
-     * Obtiene todos los festivos en un rango de fechas [startDateIso, endDateIso].
-     */
     static obtenerFestivosEnRango(startDateIso, endDateIso) {
         const startYear = parseInt(startDateIso.slice(0, 4), 10);
         const endYear = parseInt(endDateIso.slice(0, 4), 10);
@@ -116,9 +88,6 @@ class ColombiaHolidaysService {
         }
         return festivos;
     }
-    /**
-     * Verifica si una fecha específica es festivo nacional en Colombia.
-     */
     static esFestivo(dateIso) {
         const year = parseInt(dateIso.slice(0, 4), 10);
         return this.obtenerFestivosPorAnio(year).has(dateIso);

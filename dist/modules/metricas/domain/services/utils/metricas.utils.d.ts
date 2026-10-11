@@ -1,0 +1,12 @@
+import { RegistroHora } from "../../../../registros/domain/entities/registro-hora.entity";
+import { HorasAgrupadas } from "../interfaces/metricas.interfaces";
+export declare function round(val: number, decimals?: number): number;
+export declare function formatDateIso(date: Date): string;
+export declare function parseDateIso(dateIso: string): Date;
+export declare function getDayKey(dayIndex: number): string;
+export declare function obtenerRegDate(fecha: string): Date;
+export declare function estaEnMismoMes(regDate: Date, ref: Date): boolean;
+export declare function estaEnRangoSemana(regDate: Date, monday: Date, sunday: Date): boolean;
+export declare function obtenerDayKey(date: Date): string;
+export declare function getMondayOfWeek(date: Date): Date;
+export declare function calcularHorasRegistradas(registros: RegistroHora[], now: Date, todayIso: string): HorasAgrupadas;
