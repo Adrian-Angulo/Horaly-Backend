@@ -66,7 +66,7 @@ export function calcularHorasRegistradas(
     todayIso: string
   ): HorasAgrupadas {
     
-    // --- Lógica principal
+ 
     let horasRegistradasEnApp = 0;
     let horasRegistradasHoy = 0;
     let horasEstaSemana = 0;

@@ -2,7 +2,6 @@
 export class ColombiaHolidaysService {
   private static readonly cachePorAnio = new Map<number, Set<string>>();
 
- 
   public static calcularDomingoPascua(year: number): Date {
     const a = year % 19;
     const b = Math.floor(year / 100);
@@ -21,10 +20,6 @@ export class ColombiaHolidaysService {
     return new Date(year, month - 1, day);
   }
 
-  /**
-   * Aplica la regla de la Ley Emiliani: si el día no es lunes,
-   * se traslada al lunes inmediatamente posterior.
-   */
   private static trasladarAlSiguienteLunes(date: Date): Date {
     const dayOfWeek = date.getDay(); // 0: domingo, 1: lunes, ..., 6: sábado
     if (dayOfWeek === 1) {
@@ -49,9 +44,6 @@ export class ColombiaHolidaysService {
     return `${y}-${m}-${d}`;
   }
 
-  /**
-   * Obtiene todos los festivos nacionales oficiales de Colombia para el año dado en formato ISO (`YYYY-MM-DD`).
-   */
   public static obtenerFestivosPorAnio(year: number): Set<string> {
     if (this.cachePorAnio.has(year)) {
       return this.cachePorAnio.get(year)!;
@@ -59,7 +51,6 @@ export class ColombiaHolidaysService {
 
     const festivos = new Set<string>();
 
-    // 1. Festivos Fijos (no se trasladan)
     festivos.add(this.formatearIso(new Date(year, 0, 1))); // 1 Ene: Año Nuevo
     festivos.add(this.formatearIso(new Date(year, 4, 1))); // 1 May: Día del Trabajo
     festivos.add(this.formatearIso(new Date(year, 6, 20))); // 20 Jul: Grito de Independencia

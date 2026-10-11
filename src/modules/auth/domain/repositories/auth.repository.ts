@@ -1,4 +1,5 @@
-import { HorarioSemanal, UserProfile, UserSession } from '../entities/auth-user.entity.js';
+import {  UserProfile, UserSession } from '../entities/auth-user.entity.js';
+import { HorarioSemanal } from '../interfaces/auth.interface.js';
 
 export interface RegisterDTO {
   email: string;
